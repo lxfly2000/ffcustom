@@ -32,14 +32,6 @@ if len(sys.argv)<=1:
     print(" 4.在手机上下载“爱字体”点击“我的安装”找到生成的字体后选择“应用”，\n 5.在系统设置里选择由“爱字体”生成的字体。（即后面带有(iFont)字样的字体）")
     exit(1)
 
-def copy_font(font_file):
-    to_path=assets_path+"/fonts/"+get_file_name(font_file)
-    if not os.path.exists(to_path):
-        shutil.copyfile(font_file,to_path)
-        print("复制 "+font_file+" 到 "+to_path)
-    else:
-        print(to_path+" 已经存在。")
-
 def clear_dir(path):
     for item in os.listdir(path):
         if os.path.isfile(path+"/"+item):
@@ -69,7 +61,16 @@ class FontXML:
         self.xf.setAttribute("displayname",name)
 
     def addFont(self,replacing_font,existing_font):
-        copy_font(replacing_font)
+        to_path=assets_path+"/fonts/"+get_file_name(replacing_font)
+        otf_rename=False
+        if replacing_font[-4:].lower()==".otf":
+            to_path+=".ttf"
+            otf_rename=True
+        if not os.path.exists(to_path):
+            shutil.copyfile(replacing_font,to_path)
+            print("复制 "+replacing_font+" 到 "+to_path)
+        if otf_rename:
+            replacing_font+=".ttf"
         tagFile=self.document.createElement("file")
         tagFilename=self.document.createElement("filename")
         tagFilename.appendChild(self.document.createTextNode(get_file_name(replacing_font)))
@@ -83,7 +84,7 @@ class FontXML:
         f=open(path,mode="wb")
         f.write(self.document.toprettyxml(indent="    ",encoding="utf-8"))
         f.close()
-        print("保存至 "+path)
+        print("保存XML至 "+path)
         
 font_xml=FontXML()
 font_xml.setDisplayName(sys.argv[1])
@@ -93,15 +94,19 @@ clear_dir(assets_path+"/xml")
 xml_name=""
 for i in range(2,len(sys.argv),2):
     if i+1<len(sys.argv):
-        if sys.argv[i][-4:].lower()==".otf":
-            sys.argv[i]+=".ttf"
         font_xml.addFont(sys.argv[i],sys.argv[i+1])
         if sys.argv[i+1].lower()=="droidsans.ttf":
             xml_name=sys.argv[i][:sys.argv[i].rfind(".")]
 
 if xml_name=="":
     print("未指定 DroidSans.ttf 的替换字体。")
-    exit(1)
+    exit(-1)
+if not os.path.exists(assets_path+"/fonts/"+xml_name+".ttf"):
+    print("未找到 "+xml_name+".ttf，尝试查找 "+xml_name+".otf.ttf……")
+    xml_name+=".otf"
+    if not os.path.exists(assets_path+"/fonts/"+xml_name+".ttf"):
+        print("无法找到XML对应的字体文件。")
+        exit(-2)
 font_xml.saveToFile(assets_path+"/xml/"+xml_name+".xml")
 
 def save_string_app_name(app_name):
