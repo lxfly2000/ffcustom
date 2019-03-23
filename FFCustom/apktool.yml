@@ -1,0 +1,26 @@
+!!brut.androlib.meta.MetaInfo
+apkFileName: Kaiti.apk
+compressionType: false
+doNotCompress:
+- arsc
+- qmg
+isFrameworkApk: false
+packageInfo:
+  forcedPackageId: '127'
+  renameManifestPackage: com.monotype.android.font.foundation
+sdkInfo:
+  minSdkVersion: '24'
+  targetSdkVersion: '24'
+sharedLibrary: false
+sparseResources: true
+unknownFiles:
+  SEC-INF/buildConfirm.crt: '8'
+  SEC-INF/buildinfo.xml: '8'
+usesFramework:
+  ids:
+  - 1
+  tag: null
+version: 2.4.0
+versionInfo:
+  versionCode: '100400004'
+  versionName: 1.0.04-4
