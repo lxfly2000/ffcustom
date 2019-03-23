@@ -27,9 +27,8 @@ assets_path=project_dir+"/assets"
 if len(sys.argv)<=1:
     print("命令行：ffbuild.py <字体名> <字体文件1> <替换文件1> [<字体文件2> <替换文件2>…]")
     print("字体文件：指要显示的字体的所需文件。")
-    print("替换文件：指系统中原来存在的文件，比如DroidSans.ttf，DroidSans-Bold.ttf，DroidSansFallback.ttf等。")
-    print("\n使用方法：\n 1.先用本程序配置工程，\n 2.然后将本工程用AndroidStudio打开并构建生成字体包，\n 3.将生成的APK安装至手机，")
-    print(" 4.在手机上下载“爱字体”点击“我的安装”找到生成的字体后选择“应用”，\n 5.在系统设置里选择由“爱字体”生成的字体。（即后面带有(iFont)字样的字体）")
+    print("替换文件：指系统中原来存在的文件，比如DroidSans.ttf，DroidSans-Bold.ttf，DroidSansFallback.ttf等，注意必须含有DroidSans.ttf一项。")
+    print("\n使用方法：\n 1.先用本程序生成字体包，\n 2.将生成的APK安装至手机，\n 3.在系统设置里选择生成的字体。")
     exit(1)
 
 def clear_dir(path):
