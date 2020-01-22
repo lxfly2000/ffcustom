@@ -1,7 +1,8 @@
 # Python 3.7
 # Encoding: UTF-8
 
-JDK_PATH="D:/jdk-12.0.1"
+JAVA_PATH="D:/jdk-12.0.1"
+ANDROID_PATH="D:/Android/Sdk"
 
 if __name__!="__main__":
     print("请通过命令行运行这个脚本。")
@@ -12,12 +13,18 @@ import shutil
 import sys
 from xml.dom.minidom import Document
 
-if not os.path.exists(JDK_PATH):
-    JDK_PATH=os.environ.get("programfiles")+"/Java"
-    for item in os.listdir(JDK_PATH):
-        if item[:3].lower()=="jdk":
-            JDK_PATH=JDK_PATH+"/"+item
-            break
+if os.environ.get("JAVA_HOME"):
+    JAVA_PATH=os.environ.get("JAVA_HOME")
+elif not os.path.exists(JAVA_PATH):
+    JAVA_PATH_TMP=os.environ.get("programfiles")+"/Java"
+    if os.path.exists(JAVA_PATH_TMP):
+        JAVA_PATH=JAVA_PATH_TMP
+        for item in os.listdir(JAVA_PATH):
+            if item[:3].lower()=="jdk" or item[:3].lower()=="jre":
+                JAVA_PATH=JAVA_PATH+"/"+item
+                break
+if os.environ.get("ANDROID_HOME"):
+    ANDROID_PATH=os.environ.get("ANDROID_HOME")
 
 font_package_name="FFCustom"
 project_dir="FFCustom"
@@ -134,14 +141,21 @@ def save_string_app_name(app_name):
     f.close()
     print("APP_NAME 设置为 \""+app_name+"\"")
 
+def find_apksigner(root):
+    for item in os.listdir(root):
+        p=root+"/"+item+"/lib/apksigner.jar"
+        if os.path.exists(p):
+            return p
+    return root
+
 def sign_apk(apk_path,signed_apk_path):
-    jarsigner="\""+JDK_PATH+"/bin/jarsigner\""
-    return os.system("echo ffkeys|"+jarsigner+" -keystore ffks.jks -storepass ffcustom -signedjar \""+signed_apk_path+"\" \""+apk_path+"\" cert")
+    apksigner="\""+find_apksigner(ANDROID_PATH+"/build-tools")+"\""
+    return os.system("(\""+JAVA_PATH+"/bin/java.exe\" -jar \""+apksigner+"\" sign --v1-signing-enabled true --v2-signing-enabled false --v3-signing-enabled false --ks ffks.jks --ks-key-alias cert --ks-pass pass:ffcustom --key-pass pass:ffkeys --out \""+signed_apk_path+"\" \""+apk_path+"\")")
 
 save_string_app_name(sys.argv[1])
 out_path=sys.argv[1]+".apk"
 sign_path=sys.argv[1]+"_signed.apk"
-if os.system(JDK_PATH+"/bin/java -jar apktool.jar b -o\""+out_path+"\" "+project_dir):
+if os.system("(\""+JAVA_PATH+"/bin/java.exe\" -jar apktool.jar b -o\""+out_path+"\" "+project_dir+")"):
     print("执行 apktool 出错，请检查是否已正确安装 Java 以及命令行是否正确。")
 else:
     if sign_apk(out_path,sign_path):
