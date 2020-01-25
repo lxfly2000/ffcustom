@@ -149,13 +149,13 @@ def find_apksigner(root):
     return root
 
 def sign_apk(apk_path,signed_apk_path):
-    apksigner="\""+find_apksigner(ANDROID_PATH+"/build-tools")+"\""
-    return os.system("(\""+JAVA_PATH+"/bin/java.exe\" -jar \""+apksigner+"\" sign --v1-signing-enabled true --v2-signing-enabled false --v3-signing-enabled false --ks ffks.jks --ks-key-alias cert --ks-pass pass:ffcustom --key-pass pass:ffkeys --out \""+signed_apk_path+"\" \""+apk_path+"\")")
+    apksigner=find_apksigner(ANDROID_PATH+"/build-tools")
+    return os.system("(\""+JAVA_PATH+"/bin/java\" -jar \""+apksigner+"\" sign --v1-signing-enabled true --v2-signing-enabled false --v3-signing-enabled false --ks ffks.jks --ks-key-alias cert --ks-pass pass:ffcustom --key-pass pass:ffkeys --out \""+signed_apk_path+"\" \""+apk_path+"\")")
 
 save_string_app_name(sys.argv[1])
 out_path=sys.argv[1]+".apk"
 sign_path=sys.argv[1]+"_signed.apk"
-if os.system("(\""+JAVA_PATH+"/bin/java.exe\" -jar apktool.jar b -o\""+out_path+"\" "+project_dir+")"):
+if os.system("(\""+JAVA_PATH+"/bin/java\" -jar apktool.jar b -o\""+out_path+"\" "+project_dir+")"):
     print("执行 apktool 出错，请检查是否已正确安装 Java 以及命令行是否正确。")
 else:
     if sign_apk(out_path,sign_path):
