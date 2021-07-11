@@ -150,7 +150,7 @@ def find_apksigner(root):
 
 def sign_apk(apk_path,signed_apk_path):
     apksigner=find_apksigner(ANDROID_PATH+"/build-tools")
-    return os.system("(\""+JAVA_PATH+"/bin/java\" -jar \""+apksigner+"\" sign --v1-signing-enabled true --v2-signing-enabled false --v3-signing-enabled false --ks ffks.jks --ks-key-alias cert --ks-pass pass:ffcustom --key-pass pass:ffkeys --out \""+signed_apk_path+"\" \""+apk_path+"\")")
+    return os.system("(\""+JAVA_PATH+"/bin/java\" -jar \""+apksigner+"\" sign --v1-signing-enabled true --v2-signing-enabled false --ks ffks.jks --ks-key-alias cert --ks-pass pass:ffcustom --key-pass pass:ffkeys --out \""+signed_apk_path+"\" \""+apk_path+"\")")
 
 save_string_app_name(sys.argv[1])
 out_path=sys.argv[1]+".apk"
